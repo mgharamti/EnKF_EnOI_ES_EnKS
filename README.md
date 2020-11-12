@@ -12,8 +12,8 @@
  an EnKS function that assimilates the observations serially and uses 
  DART's style (2-step update, Anderson, 2003). 
  
- This a mere educational package. The coding style is not the best. 
- It's intended to become familiar with the different ensemble schemes, 
+ This a mere educational package. The coding style (in MATLAB) is not the best. 
+ The intent is to familiarize the user with the different ensemble schemes, 
  their implementation and performance.
  
-![smoother vs filter](EnKF_EnKS.pdf)
+![smoother vs filter](docs/EnKF_EnKS.png)
