@@ -16,4 +16,4 @@
  It's intended to become familiar with the different ensemble schemes, 
  their implementation and performance.
  
-![smoother vs filter](EnKF_EnKS.pdf)
+![smoother vs filter](docs/EnKF_EnKS.png)
