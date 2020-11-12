@@ -15,3 +15,6 @@
  This a mere educational package. The coding style is not the best. 
  It's intended to become familiar with the different ensemble schemes, 
  their implementation and performance.
+ 
+ 
+![smoother vs filter](EnKF_EnKS.pdf)
