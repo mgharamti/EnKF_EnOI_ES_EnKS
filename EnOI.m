@@ -12,7 +12,7 @@ rng( 'default' )
 %Prior Statistics:
 Xa = mean( Up,2 ) ;  
 
-% Static "historical" ensmeble
+% Static "historical" ensemble
 t = 1 ;
 Xo = Up( :,randperm( model.T,Ne ) ) ;
 Ao = ( Xo - repmat( mean( Xo,2 ),1,Ne ) ) / sqrt( Ne-1 ) ;
