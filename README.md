@@ -16,5 +16,6 @@
  The intent is to familiarize the user with the different ensemble schemes, 
  their implementation and performance.
  
+ <br/>
  
 ![smoother vs filter](docs/EnKF_EnKS.png)
