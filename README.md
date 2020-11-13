@@ -1,4 +1,4 @@
-# EnKF_EnOI_ES_EnKS
+## EnKF_EnOI_ES_EnKS
    
   A toy DA system that uses a 1D linear heat diffusion model to compare
   the following ensemble DA schemes: 
@@ -17,5 +17,7 @@
  their implementation and performance.
  
  <br/>
+ 
+ To start, you can run `DA_EnKF_EnOI_ES_EnKS.m` to compare the different schemes. You can choose the ensemble size and the smoother lag
  
 ![smoother vs filter](docs/EnKF_EnKS.png)
