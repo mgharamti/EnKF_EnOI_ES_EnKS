@@ -18,6 +18,11 @@
  
  <br/>
  
- To start, you can run `DA_EnKF_EnOI_ES_EnKS.m` to compare the different schemes. You can choose the ensemble size and the smoother lag
+ To start, you can run `DA_EnKF_EnOI_ES_EnKS.m` to compare the different schemes. You can choose the *ensemble size* and the *smoother lag*
+`DA_EnKF_EnOI_ES_EnKS.m` calls the separate functions: `EnKF.m`, `EnOI.m`, `ES.m` and `EnKS.m` 
+ 
+ To study the effect of the length of the *lag*, you can run `compare_enkf_enks_lags.m` and see a comparison between the EnKF and EnKS. You will get results similar  to those in the figure below.  
+ 
+  <br/>
  
 ![smoother vs filter](docs/EnKF_EnKS.png)
