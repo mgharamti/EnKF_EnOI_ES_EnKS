@@ -1,6 +1,6 @@
 ## EnKF_EnOI_ES_EnKS
    
-  A toy DA system that uses a 1D linear heat diffusion model to compare
+  A toy DA system that uses a (forced) 1D linear heat diffusion model to compare
   the following ensemble DA schemes: 
   - Ensemble Kalman Filter: EnKF
   - Ensemble Optimal Interpolation: EnOI
