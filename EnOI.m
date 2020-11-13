@@ -1,4 +1,4 @@
-function [Ur, RMSE, RMSF, RMSA, EnV1, EnV2, EnV3] = EnOI(tag, Ne)
+function [Ur, RMSE, RMSF, RMSA, EnV1, EnV2, EnV3] = EnOI(tag)
 
 if nargin < 1
     tag = 1;
@@ -13,9 +13,11 @@ rng( 'default' )
 Xa = mean( Up,2 ) ;  
 
 % Static "historical" ensemble
-t = 1 ;
-Xo = Up( :,randperm( model.T,Ne ) ) ;
-Ao = ( Xo - repmat( mean( Xo,2 ),1,Ne ) ) / sqrt( Ne-1 ) ;
+t  = 1;
+Ns = 1000;  % no. of static states
+
+Xo = Up( :,randperm(model.T, Ns) ) ;
+Ao = (Xo - repmat( mean(Xo, 2), 1, Ns) ) / sqrt(Ns-1) ;
 Co = ( H*Ao )*( H*Ao )' + R ;
 
 [ U1,S1,V1 ]= svd(Co);

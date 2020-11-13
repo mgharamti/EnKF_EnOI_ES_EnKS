@@ -51,7 +51,7 @@ fprintf( '\n\n========= ************** ========= \n')
 fprintf(     '          2. EnOI_DA !!!           \n')
 fprintf(     '========= ************** ========= \n\n')
 
-[~, ~, RMSF_EnOI, RMSA_EnOI, EnV1_EnOI, EnV2_EnOI, EnV3_EnOI] = EnOI(tag, N);
+[~, ~, RMSF_EnOI, RMSA_EnOI, EnV1_EnOI, EnV2_EnOI, EnV3_EnOI] = EnOI(tag);
 
 
 fprintf( '\n\n========= ************** ========= \n')
