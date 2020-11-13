@@ -5,18 +5,11 @@ clc
 rng(1)
 
 %% Test a large range of lags and see how the EnKS performs relative to the EnKF. 
-
-
-Input1= 'Display Output for each scheme? [yes=1/no=0]: ';
-Input2= 'Length of the lagged smoothing window? [1/2/3/...]: ';
-Input3= 'Ensemble size? [10/20/30/...]: ';
-
 tag      = 0; 
 ens_size = [20, 100];
 LAG      = 1:50;
 N        = length(ens_size);
 L        = length(LAG);
-
 
 
 fprintf( '\n\n========= ************** ========= \n')
