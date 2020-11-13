@@ -13,7 +13,7 @@
  DART's style (2-step update, Anderson, 2003). 
  
  This a mere educational package. The coding style (in MATLAB) is not *top-notch*. 
- The intent is to familiarize the user with the different ensemble schemes, 
+ The intent is to familiarize the user with different ensemble schemes, 
  their implementation and performance.
  
  <br/>
