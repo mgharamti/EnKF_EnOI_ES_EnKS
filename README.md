@@ -12,7 +12,7 @@
  an EnKS function that assimilates the observations serially and uses 
  DART's style (2-step update, Anderson, 2003). 
  
- This a mere educational package. The coding style (in MATLAB) is not the best. 
+ This a mere educational package. The coding style (in MATLAB) is not *top-notch*. 
  The intent is to familiarize the user with the different ensemble schemes, 
  their implementation and performance.
  
@@ -23,7 +23,7 @@
  
  To study the effect of the length of the *lag*, you can run `compare_enkf_enks_lags.m` and see a comparison between the EnKF and EnKS. You will get results similar  to those in the figure below.  
  
- The function `play_heat_model.m` 
+ The script `play_heat_model.m` shows the evolution of the truth in time.  
  
   <br/>
  
