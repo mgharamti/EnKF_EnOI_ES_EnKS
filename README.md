@@ -21,15 +21,15 @@
  To start, you can run `DA_EnKF_EnOI_ES_EnKS.m` to compare the different schemes in an OSSE framework. You can choose the *model* (advection or diffusion)) *ensemble size* and the *smoother lag*
 `DA_EnKF_EnOI_ES_EnKS.m` calls the separate functions: `EnKF.m`, `EnOI.m`, `ES.m` and `EnKS.m` To simulate a realistic scenario, 2 model parameters are perturbed. Thus, the forecast model is different than the one used to generate the truth.   
  
- To study the effect of the length of the *lag*, you can run `compare_enkf_enks_lags.m` and see a comparison between the EnKF and EnKS. You will get results similar  to those in the figure below.  
+ To study the effect of the length of the *lag*, you can run `compare_enkf_enks_lags.m` and see a comparison between the EnKF and EnKS. You will get results similar to those in the figures below.  
  
  The script `play_heat_model.m` shows the evolution of the truth in time.  
  
 <br/>
 
 <table><tr>
-<td><img height=350, src="./docs/EnKF_EnKS_diffusion.png"></td> 
-<td><img height=350, src="./docs/all_schemes_advection.png"></td>
+<td><img height=450, src="./docs/EnKF_EnKS_diffusion.png"></td> 
+<td><img height=450, src="./docs/all_schemes_advection.png"></td>
 </tr></table>
 
 <!-- ![smoother vs filter](docs/EnKF_EnKS_diffusion.png) --!>
