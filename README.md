@@ -27,4 +27,4 @@
  
   <br/>
  
-![smoother vs filter](docs/EnKF_EnKS.png)
+![smoother vs filter](docs/EnKF_EnKS_diffusion.png)
