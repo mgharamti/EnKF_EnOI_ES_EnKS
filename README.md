@@ -23,7 +23,7 @@
  
  To study the effect of the length of the *lag*, you can run `compare_enkf_enks_lags.m` and see a comparison between the EnKF and EnKS. You will get results similar to those in the figures below.  
  
- The script `play_heat_model.m` shows the evolution of the truth in time.  
+ The script `run_models_offline.m` shows the evolution of the truth in time.  
  
 <br/>
 
