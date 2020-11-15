@@ -1,105 +1,120 @@
-function [Ur, RMSE, RMSF, RMSA, EnV1, EnV2, EnV3] = EnOI(tag)
+function [RMSE, RMSF, RMSA, EnV1, EnV2] = EnOI(tag, eqn)
 
 if nargin < 1
     tag = 1;
+    eqn = 'diffusion';
 end
 
 rng( 'default' )
 
-% Get the observations, free run, and initialize the model
-[model, Ur, Up, RMSE, Force, Y, H, R, Cy, pt] = init_system;
+% System Config
+model = sys_conf(eqn);
 
-%Prior Statistics:
-Xa = mean( Up,2 ) ;  
+% Truth & obs
+[model, XR, Y, F] = pmo(model);
+
+% DA configure 
+[model, Y, RMSE, F, Xa, XP] = da_init(model, XR, F, Y, 1);
+ 
 
 % Static "historical" ensemble
-t  = 1;
 Ns = 1000;  % no. of static states
 
-Xo = Up( :,randperm(model.T, Ns) ) ;
-Ao = (Xo - repmat( mean(Xo, 2), 1, Ns) ) / sqrt(Ns-1) ;
-Co = ( H*Ao )*( H*Ao )' + R ;
+Xo = XP(:, randperm(model.Cy, Ns));
+Ao = (Xo - repmat(mean(Xo, 2), 1, Ns)) / sqrt(Ns - 1);
+Co = (Y.frwd_operator * Ao) * (Y.frwd_operator * Ao)' + Y.obs_err_var;
 
-[ U1,S1,V1 ]= svd(Co);
-Fi = find( cumsum( diag(S1)/sum(S1(:)) ) > 0.99,1 );
-Ci = V1( :,1:Fi )*diag( 1./diag( S1(1:Fi,1:Fi) ) )*U1( :,1:Fi )';
+[U1, S1, V1] = svd(Co);
 
-Go = Ao * ( ( H*Ao )' * Ci ); 
+Fi = find(cumsum(diag(S1) / sum(S1(:))) > 0.99, 1);
+Ci = V1(:, 1:Fi) * diag(1 ./ diag(S1(1:Fi, 1:Fi))) * U1(:, 1:Fi)';
+ 
+Go = Ao * ((Y.frwd_operator * Ao)' * Ci); 
 
 % Diagnostic Variables:
-RMSF = zeros( Cy,1 ) ; 
-RMSA = zeros( Cy,1 ) ; 
-EnV1 = zeros( Cy,1 ) ;
-EnV2 = zeros( Cy,1 ) ;
-EnV3 = zeros( Cy,1 ) ;
+RMSF = zeros(Y.da_Cy, 1); 
+RMSA = zeros(Y.da_Cy, 1); 
+EnV1 = zeros(Y.da_Cy, 1);
+EnV2 = zeros(Y.da_Cy, 1);
 
-vb1 = 10 ;
-vb2 = 25 ;
-vb3 = 40 ;
 
-model.rep= pt;
-model.err= 0.0;
+% DA loop
+t = 1;
 
-while( t <= Cy )
+while t <= Y.da_Cy
     
     % Propagation
-    Xf= Xa; 
-    for i= 1:model.rep
-        St = Force( :,model.rep*(t-1) + i );
-        Xf = HeatModel1D( Xf,model,St ) + model.err*randn( model.Nx,1 ) ;
+    Xf = Xa; 
+    for i = 1:Y.freq_obs_time
+        f  = F(:, Y.freq_obs_time * (t-1) + i);
+        Xf = forecast_model(Xf, model, f) + Y.mod_err * randn(model.Nx, 1);
     end
-    D= Y( :,t ) - H*Xf;
+    D = Y.data(:, t) - Y.frwd_operator * Xf;
     
     % Update
-    disp( [ 'Update at observation step: ' num2str( t ) ' (Time = ' num2str( model.dt*t*model.rep ) ' sec)' ] ) ;
-    Xa= Xf + Go*D ;
-    
+    disp( [ 'Update at DA step: ' num2str(t) ] );
+    Xa = Xf + Go * D; 
     
     % Calculations
-    RMSF( t ) = 1/sqrt( model.Nx ) * norm( Xf - Ur( :,t*model.rep ) ) ; 
-    RMSA( t ) = 1/sqrt( model.Nx ) * norm( Xa - Ur( :,t*model.rep ) ) ; 
-    EnV1( t ) = Xf( vb1 ) ;
-    EnV2( t ) = Xf( vb2 ) ;
-    EnV3( t ) = Xf( vb3 ) ;
-    t = t + 1 ;
+    RMSF(t) = 1 / sqrt(model.Nx) * norm(Xf - XR(:, t * Y.freq_obs_time)); 
+    RMSA(t) = 1 / sqrt(model.Nx) * norm(Xa - XR(:, t * Y.freq_obs_time)); 
+    EnV1(t) = Xf(Y.vars_to_diag(1));
+    EnV2(t) = Xf(Y.vars_to_diag(2));
     
+    t = t + 1 ;
 end
 
 
-% Plotting:
+%% Plotting:
 if tag
 
-    figure( 'uni','pi','pos',[ 300,700,600,500 ] )
+    figure( 'uni','pi','pos',[300, 700, 1000, 400] )
 
-    h1= plot( model.dt*(1:20)*model.rep,RMSE,'k','LineWidth',2 ) ; hold on
-    h2= plot( model.dt*(1:20)*model.rep,RMSF,'b','LineWidth',2 ) ; grid on
-    h3= plot( model.dt*(1:20)*model.rep,RMSA,'r','LineWidth',2 ) ; 
-    xlabel( 'Time (sec)' ); ylabel( 'EnOI Statistics' )
-    set( gca,'FontSize',16 ); Lg= legend( [ h1,h2,h3 ],'RMS: Free-Run','RMS: Forecast','RMS: Analysis', ...
-             'Location','Best' ); set( Lg,'EdgeColor','w' )
-    title( [ '$\widehat{RMSE}$ = ' num2str( mean( RMSE ) ) ', $\widehat{RMSA}$ = ' num2str( mean( RMSA ) ) ], ...
-             'FontSize',20,'Interpreter','Latex' )
+    h1 = plot(1:Y.da_Cy, RMSE, 'k', 'LineWidth', 2) ; hold on
+    h2 = plot(1:Y.da_Cy, RMSF, 'b', 'LineWidth', 2) ; grid on
+    h3 = plot(1:Y.da_Cy, RMSA, 'r', 'LineWidth', 2) ; 
+    
+    xlabel('DA steps', 'FontSize', 18)
+    ylabel('Statistics', 'FontSize', 18)
+    
+    set(gca, 'FontSize', 16); 
+    
+    Lg = legend( [h1, h2, h3]       , ...
+            'RMS: Free-Run'         , ...
+            'Prior RMSE'            , ...
+            'Posterior RMSE'        , 'Location', 'Best'); 
+    
+    title( [ 'Averages: RMSE (free-run): ' sprintf('%.2f', mean(RMSE)) ...
+             ', Prior RMSE: ' sprintf('%.2f', mean(RMSF)), ...
+             ', Post RMSE: '  sprintf('%.2f', mean(RMSA)) ], 'FontSize', 20)
 
 
-    figure( 'uni','pi','pos',[ 300,700,600,800 ] )
+    figure('uni','pi','pos',[300, 700, 1300, 450])
 
-    subplot( 311 )
-    hE= plot( model.dt*(1:20)*model.rep,EnV1,'-.r','LineWidth',2 ); hold on; grid on
-    hR= plot( model.dt*(1:20)*model.rep,Ur( vb1,pt:pt:end ),'-b','LineWidth',2 );
-    xlabel( 'Time (sec)' ); ylabel( [ 'Variable #' num2str(vb1) ] ); set( gca,'FontSize',16 )
-    title( 'Ensemble Optimal Interpolation: Evolution of Variables','FontSize',18 )
-    legend( [ hR,hE ],'Reference','EnOI Analysis','Location','Best' )
+    subplot(121)
+    hM = plot(1:Y.da_Cy, EnV1                             , '-.r', 'LineWidth', 2); hold on
+    hR = plot(1:Y.da_Cy, XR(Y.vars_to_diag(1), Y.da_steps), '-b' , 'LineWidth', 2); grid on
+    
+    xlabel('DA steps', 'FontSize', 18)
+    title(['Observed Variable: #' num2str(Y.vars_to_diag(1)) ...
+        ', Average Abs. Bias: ' sprintf('%.3f', mean(abs(EnV1'  - XR(Y.vars_to_diag(1), Y.da_steps)))) ], 'FontSize', 20)
+    
+    
+    set(gca, 'FontSize', 16)
+    
+    legend([hR, hM], 'Reference (truth)', 'Ensemble Mean', 'Location', 'Best')
 
-    subplot( 312 )
-    hE= plot( model.dt*(1:20)*model.rep,EnV2,'-.r','LineWidth',2 ); hold on; grid on
-    hR= plot( model.dt*(1:20)*model.rep,Ur( vb2,pt:pt:end ),'-b','LineWidth',2 );
-    xlabel( 'Time (sec)' ); ylabel( [ 'Variable #' num2str(vb2) ] ); set( gca,'FontSize',16 )
-    legend( [ hR,hE ],'Reference','EnOI Analysis','Location','Best' )
+    subplot(122)
+    hM = plot(1:Y.da_Cy, EnV2                             , '-.r', 'LineWidth', 2); hold on
+    hR = plot(1:Y.da_Cy, XR(Y.vars_to_diag(2), Y.da_steps), '-b' , 'LineWidth', 2); grid on
+    
+    xlabel('DA steps', 'FontSize', 18)
+    title(['Unobserved Variable: #' num2str(Y.vars_to_diag(2)) ...
+        ', Average Abs. Bias: ' sprintf('%.3f', mean(abs(EnV2'  - XR(Y.vars_to_diag(2), Y.da_steps)))) ], 'FontSize', 20)
+    
+    set(gca, 'FontSize', 16)
+    
+    legend([hR, hM], 'Reference (truth)', 'Ensemble Mean', 'Location', 'Best')
 
-    subplot( 313 )
-    hE= plot( model.dt*(1:20)*model.rep,EnV3,'-.r','LineWidth',2 ); hold on; grid on
-    hR= plot( model.dt*(1:20)*model.rep,Ur( vb3,pt:pt:end ),'-b','LineWidth',2 );
-    xlabel( 'Time (sec)' ); ylabel( [ 'Variable #' num2str(vb3) ] ); set( gca,'FontSize',16 )
-    legend( [ hR,hE ],'Reference','EnOI Analysis','Location','Best' )
     
 end

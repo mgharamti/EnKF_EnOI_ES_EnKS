@@ -6,8 +6,9 @@ rng(1)
 
 %% Test a large range of lags and see how the EnKS performs relative to the EnKF. 
 tag      = 0; 
+eqn      = 'advection';
 ens_size = [20, 100];
-LAG      = 1:50;
+LAG      = 1:10;
 N        = length(ens_size);
 L        = length(LAG);
 
@@ -17,7 +18,7 @@ fprintf(     '          1. EnKF_DA !!!           \n')
 fprintf(     '========= ************** ========= \n\n')
 
 for e = 1:N
-    [~, ~, ~, RMSA_EnKF(:, e)]= EnKF(tag, ens_size(e)); %#ok
+    [~, ~, RMSA_EnKF(:, e)]= EnKF(tag, eqn, ens_size(e)); %#ok
 end
 
 
@@ -29,7 +30,7 @@ cc = zeros(L, 1);
 for e = 1:N
     for k = 1:L
         tic
-        [~, ~, ~, RMSA_EnKS(:, k, e)]= EnKS(tag, LAG(k), ens_size(e)); %#ok
+        [~, ~, RMSA_EnKS(:, k, e)]= EnKS(tag, eqn, LAG(k), ens_size(e)); %#ok
         cc(k, e) = toc;
     end
 end
@@ -53,11 +54,12 @@ plot(LAG, enks(:, 2),'--b', 'LineWidth', 2); grid on
 
 set(gca, 'FontSize', 16, 'XLim', [LAG(1), LAG(L)])
 xlabel('Smoother Lag', 'FontSize', 18)
-ylabel('Analysis RMSE', 'FontSize', 18)
+ylabel('Posterior RMSE', 'FontSize', 18)
 
 title('Performance Comparison for different Ensemble Size', 'FontSize', 20)
 
-legend([ 'EnKF, N: ' num2str(ens_size(1)) ], ...
+Lg = legend([ 'EnKF, N: ' num2str(ens_size(1)) ], ...
        [ 'EnKS, N: ' num2str(ens_size(1)) ], ...
        [ 'EnKF, N: ' num2str(ens_size(2)) ], ...
-       [ 'EnKS, N: ' num2str(ens_size(2)) ], 'Location', 'NorthWest', 'FontSize', 16)
+       [ 'EnKS, N: ' num2str(ens_size(2)) ], 'Location', 'NorthWest', 'FontSize', 16);
+title(Lg, eqn)
