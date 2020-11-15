@@ -27,7 +27,7 @@
  
 <br/>
 
-<img src="./docs/EnKF_EnKS_diffusion.png" width="400"/> <img src="./docs/all_schemes_advection.png" width="500"/>
+<img src="./docs/EnKF_EnKS_diffusion.png" width="400"/> <img src="./docs/all_schemes_advection.png" width="450"/>
 
 <!---
 <table><tr>
