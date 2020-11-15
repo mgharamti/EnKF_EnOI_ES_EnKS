@@ -16,7 +16,7 @@
  The intent is to familiarize the user with different ensemble schemes, 
  their implementation and performance.
  
- <br/>
+ - - - -
  
  To start, you can run `DA_EnKF_EnOI_ES_EnKS.m` to compare the different schemes in an OSSE framework. You can choose the *model* (advection or diffusion)) *ensemble size* and the *smoother lag*
 `DA_EnKF_EnOI_ES_EnKS.m` calls the separate functions: `EnKF.m`, `EnOI.m`, `ES.m` and `EnKS.m` To simulate a realistic scenario, 2 model parameters are perturbed. Thus, the forecast model is different than the one used to generate the truth.   
