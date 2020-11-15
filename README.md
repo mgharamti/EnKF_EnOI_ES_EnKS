@@ -31,7 +31,7 @@
 
 <!---
 <table><tr>
-<td><img height=400, src="./docs/EnKF_EnKS_diffusion.png"></td> 
+<td><img height=380, src="./docs/EnKF_EnKS_diffusion.png"></td> 
 <td><img height=400, src="./docs/all_schemes_advection.png"></td>
 </tr></table>
 --!>
