@@ -27,9 +27,13 @@
  
 <br/>
 
+<img src="EnKF_EnKS_diffusion.png" width="425"/> <img src="all_schemes_advection.png" width="425"/>
+
+<!---
 <table><tr>
 <td><img height=400, src="./docs/EnKF_EnKS_diffusion.png"></td> 
 <td><img height=400, src="./docs/all_schemes_advection.png"></td>
 </tr></table>
+--!>
 
 <!-- ![smoother vs filter](docs/EnKF_EnKS_diffusion.png) --!>
